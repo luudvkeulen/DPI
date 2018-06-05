@@ -3,12 +3,14 @@ package dpiclient;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import jms.OrderRequestProducer;
+import model.OrderReply;
 import model.OrderRequest;
 import model.SubType;
 import model.Type;
@@ -68,5 +70,14 @@ public class FXMLController implements Initializable {
         type2.subTypes.add(new SubType("Groenten"));
         type2.subTypes.add(new SubType("Tomaten"));
         comboType.getItems().add(type2);
-    }    
+    }
+
+    public void addOrderReply(final OrderReply orderReply) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                replyList.getItems().add(orderReply.restaurant);
+            }
+        });
+    }
 }

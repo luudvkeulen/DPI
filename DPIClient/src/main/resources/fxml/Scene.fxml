@@ -6,7 +6,7 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="324.0" prefWidth="620.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dpiclient.FXMLController">
+<AnchorPane id="AnchorPane" prefHeight="324.0" prefWidth="620.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <Button fx:id="btnOrder" layoutX="175.0" layoutY="14.0" onAction="#handleButtonAction" text="Bestel" />
         <Label fx:id="label" layoutX="126" layoutY="120" minHeight="16" minWidth="69" />

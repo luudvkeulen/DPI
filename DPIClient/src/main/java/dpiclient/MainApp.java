@@ -11,9 +11,16 @@ import jms.OrderReplyListener;
 
 public class MainApp extends Application {
 
+    private OrderReplyListener orderReplyListener;
+    
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
+        //Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
+        
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Scene.fxml"));
+        FXMLController controller = new FXMLController();
+        loader.setController(controller);
+        Parent root = loader.load();
         
         Scene scene = new Scene(root);
         scene.getStylesheets().add("/styles/Styles.css");
@@ -22,7 +29,8 @@ public class MainApp extends Application {
         stage.setScene(scene);
         stage.show();
         
-        new OrderReplyListener().listen();
+       orderReplyListener = new OrderReplyListener(controller);
+       orderReplyListener.listen();
     }
 
     /**
@@ -36,5 +44,13 @@ public class MainApp extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
+    @Override
+    public void stop() throws Exception {
+        orderReplyListener.stop();
+        super.stop();
+    }
+    
+    
 
 }
