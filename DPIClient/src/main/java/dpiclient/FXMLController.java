@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
+import jms.OrderRequestProducer;
+import model.OrderRequest;
 import model.SubType;
 import model.Type;
 
@@ -25,9 +27,13 @@ public class FXMLController implements Initializable {
     @FXML
     private ListView replyList;
     
+    private final OrderRequestProducer orderRequestProducer = new OrderRequestProducer();
+    
     @FXML
     private void handleButtonAction(ActionEvent event) {
         this.orderList.getItems().add(comboType.getValue() + " - " + comboSubType.getValue());
+        OrderRequest orderRequest = new OrderRequest(comboType.getValue().toString(), comboSubType.getValue().toString());
+        orderRequestProducer.send(orderRequest);
     }
     
     @FXML
