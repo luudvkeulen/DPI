@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.OrderReply;
 import model.OrderRequest;
 
 public class OrderRequestListener {
@@ -18,9 +19,11 @@ public class OrderRequestListener {
     private static final Gson GSON = new Gson();
     private Gateway gateway;
     private FXMLController controller;
+    private OrderReplyProducer orderReplyProducer;
 
     public OrderRequestListener(FXMLController controller) {
         this.controller = controller;
+        orderReplyProducer = new OrderReplyProducer(controller);
         System.out.println("jms.OrderRequestListener.<init>()");
     }
 
@@ -38,6 +41,7 @@ public class OrderRequestListener {
                     OrderRequest orderRequest = GSON.fromJson(message, OrderRequest.class);
                     System.out.println("Received order: " + orderRequest.type + " " + orderRequest.subType);
                     controller.addOrderRequest(orderRequest);
+                    orderReplyProducer.send(new OrderReply(orderRequest.id, "KFC", 15, 12.50));
                 }
             };
 

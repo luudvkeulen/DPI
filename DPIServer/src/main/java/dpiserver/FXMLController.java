@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
+import model.OrderReply;
 import model.OrderRequest;
 
 public class FXMLController implements Initializable {
@@ -29,7 +30,15 @@ public class FXMLController implements Initializable {
                 listOrderRequest.getItems().add(orderRequest.type + " " + orderRequest.subType + " - " + orderRequest.time);
             }
         });
-        //this.listOrderRequest.getItems().add(orderRequest);
+    }
+    
+    public void addOrderReply(final OrderReply orderReply) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                listOrderReply.getItems().add(orderReply.restaurant + " " + orderReply.price + " - " + orderReply.deliveryTime + " min");
+            }
+        });
     }
 
     @Override
