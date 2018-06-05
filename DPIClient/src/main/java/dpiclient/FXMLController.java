@@ -31,9 +31,13 @@ public class FXMLController implements Initializable {
     
     @FXML
     private void handleButtonAction(ActionEvent event) {
-        this.orderList.getItems().add(comboType.getValue() + " - " + comboSubType.getValue());
-        OrderRequest orderRequest = new OrderRequest(comboType.getValue().toString(), comboSubType.getValue().toString());
+        Type selectedType = (Type)comboType.getValue();
+        SubType selectedSubType = (SubType)comboSubType.getValue();
+        
+        OrderRequest orderRequest = new OrderRequest(selectedType.name, selectedSubType.name);
         orderRequestProducer.send(orderRequest);
+        
+        this.orderList.getItems().add(selectedType.name + " " + selectedSubType.name);
     }
     
     @FXML
