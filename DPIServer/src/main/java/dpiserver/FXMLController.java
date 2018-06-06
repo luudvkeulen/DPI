@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import model.OrderReply;
 import model.OrderRequest;
+import model.ServeRequest;
 
 public class FXMLController implements Initializable {
 
@@ -31,12 +32,21 @@ public class FXMLController implements Initializable {
             }
         });
     }
-    
+
     public void addOrderReply(final OrderReply orderReply) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 listOrderReply.getItems().add(orderReply.restaurant + " " + orderReply.price + " - " + orderReply.deliveryTime + " min");
+            }
+        });
+    }
+
+    public void addServeRequest(final ServeRequest serveRequest) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                listServeRequest.getItems().add(serveRequest.id + " - " + serveRequest.type + " " + serveRequest.subType + " - " + serveRequest.time);
             }
         });
     }

@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.OrderReply;
 import model.OrderRequest;
+import model.ServeRequest;
 
 public class OrderRequestListener {
 
@@ -20,11 +21,12 @@ public class OrderRequestListener {
     private Gateway gateway;
     private FXMLController controller;
     private OrderReplyProducer orderReplyProducer;
+    private final ServeRequestProducer serveRequestProducer;
 
     public OrderRequestListener(FXMLController controller) {
         this.controller = controller;
         orderReplyProducer = new OrderReplyProducer(controller);
-        System.out.println("jms.OrderRequestListener.<init>()");
+        serveRequestProducer = new ServeRequestProducer(controller);
     }
 
     public void listen() {
@@ -42,6 +44,7 @@ public class OrderRequestListener {
                     System.out.println("Received order: " + orderRequest.type + " " + orderRequest.subType);
                     controller.addOrderRequest(orderRequest);
                     orderReplyProducer.send(new OrderReply(orderRequest.id, "KFC", 15, 12.50));
+                    serveRequestProducer.send(new ServeRequest(orderRequest.id, orderRequest.type, orderRequest.subType, orderRequest.time));
                 }
             };
 
