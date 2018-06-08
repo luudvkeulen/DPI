@@ -7,11 +7,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import jms.OrderRequestListener;
-import model.OrderRequest;
+import jms.ServeReplyListener;
 
 public class MainApp extends Application {
 
     private OrderRequestListener orderRequestListener;
+    private ServeReplyListener serveReplyListener;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -30,6 +31,9 @@ public class MainApp extends Application {
 
         orderRequestListener = new OrderRequestListener(controller);
         orderRequestListener.listen();
+        
+        serveReplyListener = new ServeReplyListener(controller);
+        serveReplyListener.listen();
     }
 
     /**
@@ -47,7 +51,7 @@ public class MainApp extends Application {
     @Override
     public void stop() throws Exception {
         orderRequestListener.stop();
+        serveReplyListener.stop();
         super.stop();
     }
-
 }

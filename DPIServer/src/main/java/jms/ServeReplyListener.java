@@ -11,40 +11,38 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.OrderReply;
-import model.OrderRequest;
-import model.ServeRequest;
+import model.ServeReply;
 
-public class OrderRequestListener {
-
-    private static final String QUEUE_NAME = "order_requests";
+public class ServeReplyListener {
+    private static final String QUEUE_NAME = "serve_replies";
     private static final Gson GSON = new Gson();
+    private final FXMLController controller;
     private Gateway gateway;
-    private FXMLController controller;
-    //private OrderReplyProducer orderReplyProducer;
-    private final ServeRequestProducer serveRequestProducer;
+    private final OrderReplyProducer orderReplyProducer;
 
-    public OrderRequestListener(FXMLController controller) {
+    public ServeReplyListener(FXMLController controller) {
         this.controller = controller;
-        //orderReplyProducer = new OrderReplyProducer(controller);
-        serveRequestProducer = new ServeRequestProducer(controller);
+        this.orderReplyProducer = new OrderReplyProducer(controller);
     }
-
+    
     public void listen() {
         try {
             gateway = new Gateway();
             gateway.channel.queueDeclare(QUEUE_NAME, true, false, false, null);
 
-            System.out.println("Listening for order requests...");
-
             Consumer consumer = new DefaultConsumer(gateway.channel) {
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                     String message = new String(body);
-                    OrderRequest orderRequest = GSON.fromJson(message, OrderRequest.class);
-                    System.out.println("Received order: " + orderRequest.type + " " + orderRequest.subType);
-                    controller.addOrderRequest(orderRequest);
-                    //orderReplyProducer.send(new OrderReply(orderRequest.id, "KFC", 15, 12.50));
-                    serveRequestProducer.send(new ServeRequest(orderRequest.id, orderRequest.type, orderRequest.subType, orderRequest.time));
+                    ServeReply serveReply = GSON.fromJson(message, ServeReply.class);
+                    controller.addServeReply(serveReply);
+                    
+                    OrderReply orderReply = new OrderReply();
+                    orderReply.id = serveReply.id;
+                    orderReply.deliveryTime = serveReply.deliveryTime;
+                    orderReply.price = serveReply.price;
+                    orderReply.restaurant = serveReply.restaurant;
+                    orderReplyProducer.send(orderReply);
                 }
             };
 
@@ -53,9 +51,9 @@ public class OrderRequestListener {
             Logger.getLogger(OrderRequestListener.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     public void stop() {
-        serveRequestProducer.stop();
+        orderReplyProducer.stop();
         try {
             if (gateway.channel.isOpen()) {
                 gateway.channel.close();
