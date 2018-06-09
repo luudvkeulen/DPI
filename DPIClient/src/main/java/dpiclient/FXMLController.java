@@ -80,4 +80,8 @@ public class FXMLController implements Initializable {
             }
         });
     }
+    
+    public void stop() {
+        orderRequestProducer.stop();
+    }
 }

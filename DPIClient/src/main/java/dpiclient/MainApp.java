@@ -8,29 +8,31 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import jms.OrderReplyListener;
 
-
 public class MainApp extends Application {
 
     private OrderReplyListener orderReplyListener;
-    
+    private FXMLController controller;
+
     @Override
     public void start(Stage stage) throws Exception {
         //Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
-        
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Scene.fxml"));
         FXMLController controller = new FXMLController();
         loader.setController(controller);
         Parent root = loader.load();
-        
+
         Scene scene = new Scene(root);
         scene.getStylesheets().add("/styles/Styles.css");
-        
+
         stage.setTitle("DPI Client");
         stage.setScene(scene);
         stage.show();
+
+        this.controller = controller;
         
-       orderReplyListener = new OrderReplyListener(controller);
-       orderReplyListener.listen();
+        orderReplyListener = new OrderReplyListener(controller);
+        orderReplyListener.listen();
     }
 
     /**
@@ -48,9 +50,8 @@ public class MainApp extends Application {
     @Override
     public void stop() throws Exception {
         orderReplyListener.stop();
+        controller.stop();
         super.stop();
     }
-    
-    
 
 }

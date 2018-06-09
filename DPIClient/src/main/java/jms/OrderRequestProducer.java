@@ -30,4 +30,18 @@ public class OrderRequestProducer {
             Logger.getLogger(OrderRequestProducer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public void stop() {
+        try {
+            if (gateway.channel.isOpen()) {
+                gateway.channel.close();
+            }
+
+            if (gateway.connection.isOpen()) {
+                gateway.connection.close();
+            }
+        } catch (IOException | TimeoutException ex) {
+            Logger.getLogger(OrderReplyListener.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
