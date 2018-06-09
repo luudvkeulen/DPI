@@ -34,7 +34,6 @@ public class OrderReplyListener {
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                     String message = new String(body);
-                    System.out.println("Received order reply: " + message);
                     OrderReply orderReply = GSON.fromJson(message, OrderReply.class);
                     controller.addOrderReply(orderReply);
                 }

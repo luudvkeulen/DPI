@@ -39,7 +39,7 @@ public class FXMLController implements Initializable {
         OrderRequest orderRequest = new OrderRequest(selectedType.name, selectedSubType.name);
         orderRequestProducer.send(orderRequest);
         
-        this.orderList.getItems().add(selectedType.name + " " + selectedSubType.name);
+        this.orderList.getItems().add(orderRequest.id + " - " + selectedType.name + " " + selectedSubType.name);
     }
     
     @FXML
@@ -76,7 +76,7 @@ public class FXMLController implements Initializable {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                replyList.getItems().add(orderReply.restaurant);
+                replyList.getItems().add(orderReply.id + " - " + orderReply.restaurant + " - " + orderReply.deliveryTime + " min. - " + orderReply.price);
             }
         });
     }
