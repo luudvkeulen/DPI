@@ -7,12 +7,17 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import dpiserver.FXMLController;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import model.OrderReply;
 import model.OrderRequest;
 import model.ServeRequest;
+import java.util.Timer;
+import java.util.TimerTask;
+import model.OrderReply;
 
 public class OrderRequestListener {
 
@@ -20,13 +25,15 @@ public class OrderRequestListener {
     private static final Gson GSON = new Gson();
     private Gateway gateway;
     private FXMLController controller;
-    //private OrderReplyProducer orderReplyProducer;
     private final ServeRequestProducer serveRequestProducer;
+    private final OrderReplyProducer orderReplyProducer;
+    //private final List<Timer> timers = new ArrayList<>();
+    public static final HashMap<String, Timer> timers = new HashMap<>();
 
     public OrderRequestListener(FXMLController controller) {
         this.controller = controller;
-        //orderReplyProducer = new OrderReplyProducer(controller);
         serveRequestProducer = new ServeRequestProducer(controller);
+        orderReplyProducer = new OrderReplyProducer(controller);
     }
 
     public void listen() {
@@ -40,11 +47,18 @@ public class OrderRequestListener {
                 @Override
                 public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                     String message = new String(body);
-                    OrderRequest orderRequest = GSON.fromJson(message, OrderRequest.class);
+                    final OrderRequest orderRequest = GSON.fromJson(message, OrderRequest.class);
                     System.out.println("Received order: " + orderRequest.type + " " + orderRequest.subType);
                     controller.addOrderRequest(orderRequest);
-                    //orderReplyProducer.send(new OrderReply(orderRequest.id, "KFC", 15, 12.50));
                     serveRequestProducer.send(new ServeRequest(orderRequest.id, orderRequest.type, orderRequest.subType, orderRequest.time));
+                    Timer t = new Timer();
+                    t.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            orderReplyProducer.send(new OrderReply(orderRequest.id, "No result", 0, 0));
+                        }
+                    }, 10000);
+                    timers.put(orderRequest.id, t);
                 }
             };
 

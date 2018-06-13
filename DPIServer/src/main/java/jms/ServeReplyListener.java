@@ -43,6 +43,10 @@ public class ServeReplyListener {
                     orderReply.price = serveReply.price;
                     orderReply.restaurant = serveReply.restaurant;
                     orderReplyProducer.send(orderReply);
+                    
+                    if(OrderRequestListener.timers.containsKey(orderReply.id)) {
+                        OrderRequestListener.timers.get(orderReply.id).cancel();
+                    }
                 }
             };
 
