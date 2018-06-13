@@ -22,7 +22,9 @@ public class ServeRequest {
     }
 
     public ServeRequest(String id, String type, String subType, Date time) {
-        this(type, subType);
+        this.id = id;
+        this.type = type;
+        this.subType = subType;
         this.subType = subType;
         this.time = time;
     }
